@@ -16,9 +16,13 @@ function showSuccess(input) {
   formControl.className = "form-control success";
 }
 
-function isValidEmail(email) {
+function checkEmail(input) {
   const re = /[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4}/;
-  return re.test(String(email.toLowerCase()));
+  if (re.test(input.value.trim())) {
+    showSuccess(input);
+  } else {
+    showError(input, "Email is not valid");
+  }
 }
 
 function checkRequired(inputArr) {
@@ -30,6 +34,27 @@ function checkRequired(inputArr) {
     }
   });
 }
+function checkLength(input, min, max) {
+  if (input.value.length < min) {
+    showError(
+      input,
+      `${getFieldName(input)} must be at least ${min} charachters`
+    );
+  } else if (input.value.length > max) {
+    showError(
+      input,
+      `${getFieldName(input)} must be less then ${max} charachters`
+    );
+  } else {
+    showSuccess(input);
+  }
+}
+
+function checkPasswordsMatch(input1, input2) {
+  if (input1.value !== input2.value) {
+    showError(input2, "Passwords do not match");
+  }
+}
 
 function getFieldName(input) {
   return input.id.charAt(0).toUpperCase() + input.id.slice(1);
@@ -40,30 +65,8 @@ form.addEventListener("submit", function (e) {
   e.preventDefault();
 
   checkRequired([username, email, password, password2]);
+  checkLength(username, 3, 15);
+  checkLength(password, 6, 25);
+  checkEmail(email);
+  checkPasswordsMatch(password, password2);
 });
-
-//   if (username.value === "") {
-//     showError(username, "Username is required");
-//   } else {
-//     showSuccess(username);
-//   }
-
-//   if (email.value === "") {
-//     showError(email, "Email is required");
-//   } else if (!isValidEmail(email.value)) {
-//     showError(email, "Email is not correct");
-//   } else {
-//     showSuccess(email);
-//   }
-
-//   if (password.value === "") {
-//     showError(password, "Password is required");
-//   } else {
-//     showSuccess(password);
-//   }
-
-//   if (password2.value === "") {
-//     showError(password2, "Password confirmation is required");
-//   } else {
-//     showSuccess(password2);
-//   }
